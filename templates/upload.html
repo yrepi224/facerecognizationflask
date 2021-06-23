@@ -1,0 +1,223 @@
+<!doctype html>
+
+<head>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<title>Python Flask File Upload Example</title>
+	<script src="https://code.jquery.com/jquery-latest.js"></script>
+	<style type="text/css">
+		.btn-file {
+			position: relative;
+			overflow: hidden;
+		}
+
+		.btn-primary:hover {
+			font-size: 28pt;
+			margin-left: 1%;
+			margin-right: 1%;
+		}
+
+		.btn-file input[type=file] {
+			position: absolute;
+			top: 0;
+			right: 0;
+			min-width: 100%;
+			min-height: 100%;
+			font-size: 100pt;
+			text-align: right;
+			filter: alpha(opacity=0);
+			opacity: 0;
+			outline: none;
+			background: white;
+			cursor: inherit;
+			display: block;
+		}
+
+		.btn {
+			font-size: 28pt;
+			margin-left: 1%;
+			margin-right: 1%;
+			width: 48%;
+		}
+
+		<dl> {
+			margin-bottom: 5px;
+		}
+
+		<input> {
+			width: 200px;
+			height: 100px;
+			size: 100px;
+		}
+
+		#footer {
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			height: 70px;
+		}
+
+		#image_container {
+			text-align: center;
+			width: 390px;
+			height: 844px;
+		}
+
+		/* The Modal (background) */
+		.modal {
+			display: none;
+			/* Hidden by default */
+			position: fixed;
+			/* Stay in place */
+			z-index: 1;
+			/* Sit on top */
+			left: 10%;
+			top: 10%;
+			width: 50%;
+			/* Full width */
+			height: 80%;
+			/* Full height */
+			overflow: auto;
+			/* Enable scroll if needed */
+			/*background-color: rgb(0, 0, 0);*/
+			/* Fallback color */
+			/*background-color: rgba(0, 0, 0, 0.4);*/
+			/* Black w/ opacity */
+		}
+
+		/* Modal Content/Box */
+		.modal-content {
+			background-color: #fefefe;
+			margin: 15% auto;
+			/* 15% from the top and centered */
+			padding: 2%;
+			border: 1px solid #888;
+			width: 70%;
+			/* Could be more or less, depending on screen size */
+		}
+	</style>
+</head>
+<p>
+	{% with messages = get_flashed_messages() %}
+	{% if messages %}
+<ul>
+	{% for message in messages %}
+	<li>{{ message }}</li>
+	{% endfor %}
+</ul>
+{% endif %}
+</p>
+{% if filename %}
+
+{% if vary %}
+<div id="myModal" class="modal" style="display: block;left: 70px;">
+
+	<!-- Modal content -->
+	<div class="modal-content" style="
+    margin-left: 55px;
+    margin-right: 0px;
+    margin-top: 200px;
+">
+		<p style="text-align: center;"><span style="font-size: 7pt;"><b><span
+						style="font-size: 12pt;">결과</span></b></span></p>
+		<p style="text-align: center; line-height: 1.5;"><br>Reward Paid</p>
+		<p><br></p>
+		<div style="cursor:pointer;background-color:#DDDDDD;text-align: center;padding-bottom: 5px;padding-top: 5px;"
+			onclick="close_pop();">
+			<span class="pop_bt" style="font-size: 7pt;" method="get" action="/">
+				닫기
+			</span>
+
+
+		</div>
+	</div>
+
+</div>
+{% else %}
+
+<div id="myModal" class="modal" style="display: block;left: 70px;">
+
+	<!-- Modal content -->
+	<div class="modal-content" style="
+    margin-left: 55px;
+    margin-right: 0px;
+    margin-top: 200px;
+">
+		<p style="text-align: center;"><span style="font-size: 7pt;"><b><span
+						style="font-size: 12pt;">결과</span></b></span></p>
+		<p style="text-align: center; line-height: 1.5;"><br /> Retry </p>
+		<button type="button" style="margin-left:35px; width:50% ;" onclick="location.href='/' ">닫기</button>
+		<!-- <div style="font-size: 7pt;cursor:pointer;background-color:#DDDDDD;text-align: center;padding-bottom: 5px;padding-top: 5px;"
+	  onClick="close_pop();"> -->
+
+
+	</div>
+</div>
+
+</div>
+
+{% endif %}
+{% endif %}
+{% endwith %}
+
+<body>
+	{% if(filename == null) %}
+	<div id="image_container"></div>
+	<script> function setThumbnail(event) {
+			var reader = new FileReader();
+			reader.onload = function (event) {
+				var img = document.createElement("img");
+				img.setAttribute("src", event.target.result);
+				img.setAttribute("width", "390px");
+				img.setAttribute("height", "844px");
+				document.querySelector("div#image_container").appendChild(img);
+			};
+			reader.readAsDataURL(event.target.files[0]);
+		}</script>
+	{% endif %}
+
+</body>
+
+
+
+{% if filename %}
+<div>
+	<img src="{{ url_for('display_image', filename=filename) }}" style="width:390px; height:844px;">
+</div>
+<script type="text/javascript">
+
+	jQuery(document).ready(function () {
+		$('#myModal').show();
+	});
+	//팝업 Close 기능
+	function close_pop(flag) {
+		$('#myModal').hide();
+		e.preventDefault();
+		return false;
+	};
+
+</script>
+
+
+
+{% endif %}
+
+<form id="form" method="post" action="/" enctype="multipart/form-data">
+	<dl>
+		<div class="image-container" id="footer">
+			<label class="btn btn-primary btn-file">
+				Smile <input type="file" style="font-size:30pt; width:60%; height:70%; float:left; margin:5px;"
+					name="file" autocomplete="off" onchange="setThumbnail(event);" required>
+			</label>
+			<label class="btn btn-primary btn-file" style="float:right;">
+				Reward <input type="submit" style="display: none;">
+			</label>
+		</div>
+
+	</dl>
+</form>
